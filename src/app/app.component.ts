@@ -17,7 +17,7 @@ export class AppComponent implements AfterViewInit {
   displayedColumns: string[] = ['created', 'state', 'number', 'title'];
   /**MAY NEED TO REMOVE ! FROM LINE BELOW: https://stackoverflow.com/questions/49699067/property-has-no-initializer-and-is-not-definitely-assigned-in-the-construc */
   exampleDatabase: ExampleHttpDatabase | null;
-  data: GithubIssue[] = [];
+  apiData: GithubIssue[] = [];
 
   resultsLength = 0;
   isLoadingResults = true;
@@ -27,6 +27,37 @@ export class AppComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private _httpClient: HttpClient) {}
+
+  private jsonParse(apiData: GithubApi): Array<GithubIssue> {
+    const dataArray = apiData["data"]
+    let entityArray = []
+    
+     for (let index in dataArray) {
+        const obj = dataArray[index]
+
+        if (!!obj["AuditMetaData"] && obj["AuditMetaData"]["EntityName"] === "User") {
+            if (obj["TypeOfChange"] === "UPDATE" || obj["TypeOfChange"] === "ADD") {
+
+                const auditObj = {
+                    "UpdatedBy": obj["EntityPayload"]["UpdatedBy"] || null,
+                    "UpdatedTimestamp": obj["EntityPayload"]["UpdatedTimestamp"] || null,
+                    "EntityName": obj["AuditMetaData"]["EntityName"] || null,
+                    "UserID": obj["BussinessKeyPayload"]["UserId"] || null,
+                    "TypeOfChange": obj["TypeOfChange"] || null,
+                    "PrimaryOrgId": obj["EntityPayload"]["PrimaryOrgId"] || null,
+                    "PasswordExpiry": obj["EntityPayload"]["PasswordExpiry"] || null,
+                    "Password": obj["EntityPayload"]["Password"] || null
+                }
+                if (obj["TypeOfChange"] === "UPDATE") {
+                    auditObj["OldValues"] = obj["EntityPayload"]["OldValues"] || null
+                }
+                entityArray.push(auditObj)
+            }
+        }
+
+    }
+    return entityArray
+  }
 
   ngAfterViewInit() {
     this.exampleDatabase = new ExampleHttpDatabase(this._httpClient);
@@ -45,36 +76,42 @@ export class AppComponent implements AfterViewInit {
             this.paginator.pageIndex,
           ).pipe(catchError(() => observableOf(null)));
         }),
-        map(data => {
+        map(apiData => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
-          this.isRateLimitReached = data === null;
+          this.isRateLimitReached = apiData === null;
 
-          if (data === null) {
+          if (apiData === null) {
             return [];
           }
 
           // Only refresh the result length if there is new data. In case of rate
           // limit errors, we do not want to reset the paginator to zero, as that
           // would prevent users from re-triggering requests.
-          this.resultsLength = data.total_count;
-          return data.items;
+          const dataArray = this.jsonParse(apiData)
+          this.resultsLength = 60
+         
+          return dataArray;
         }),
       )
-      .subscribe(data => (this.data = data));
+      .subscribe(data => (this.apiData = data));
   }
 }
 
 export interface GithubApi {
-  items: GithubIssue[];
-  total_count: number;
+  data: GithubIssue[];
 }
 
 export interface GithubIssue {
-  created_at: string;
-  number: string;
-  state: string;
-  title: string;
+  UpdatedBy: string;
+  UpdatedTimestamp: string;
+  EntityName: string;
+  UserID: string;
+  TypeOfChange: string;
+  PrimaryOrgId: string | null;
+  PasswordExpiry: string | null,
+  Password: string;
+  OldValues: Object;
 }
 
 /** An example database that the data source uses to retrieve data for the table. */
@@ -82,10 +119,12 @@ export class ExampleHttpDatabase {
   constructor(private _httpClient: HttpClient) {}
 
   getRepoIssues(sort: string, order: SortDirection, page: number): Observable<GithubApi> {
-    const href = 'https://api.github.com/search/issues';
-    const requestUrl = `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${
-      page + 1
-    }`;
+    // const href = 'https://api.github.com/search/issues';
+    // const requestUrl = `${href}?q=repo:angular/components&sort=${sort}&order=${order}&page=${
+    //   page + 1
+    // }`;
+    const requestUrl = "https://run.mocky.io/v3/0d105fe2-0e98-47a6-af35-161b5972035f"
+    console.log(requestUrl)
 
     return this._httpClient.get<GithubApi>(requestUrl);
   }
