@@ -11,10 +11,10 @@
 
 <!--TABLE START-->
 <div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade"
+  <div class="loading-shade"
        *ngIf="isLoadingResults || isRateLimitReached">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+    <div class="rate-limit-reached" *ngIf="isRateLimitReached">
       GitHub's API rate limit has been reached. It will be reset in one minute.
     </div>
   </div>
@@ -42,6 +42,10 @@
             <div class="password-expiry" *ngIf="row_r22.OldValues.PasswordExpiry">
               <span class="title">Password Expiry: </span>
               <span class="value">{{ row_r22.OldValues.PasswordExpiry }}</span>
+            </div>
+            <div class="password" *ngIf="row_r22.OldValues.Password">
+              <span class="title">Password: </span>
+              <span class="value">{{ row_r22.OldValues.Password}}</span>
             </div>
           </div>
           <div *ngIf="!row_r22.OldValues">N/A</div>
