@@ -14,7 +14,7 @@ import {catchError, map, startWith, switchMap} from 'rxjs/operators';
   templateUrl: 'app.component.html',
 })
 export class AppComponent implements AfterViewInit {
-  displayedColumns: string[] = ['#','UpdatedBy', 'UpdatedTimestamp', 'Entity Name', 'Entity ID', 'Type of Change', 'New Values', 'Old Values'];
+  displayedColumns: string[] = ['#','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'New Values', 'Old Values'];
   /**MAY NEED TO REMOVE ! FROM LINE BELOW: https://stackoverflow.com/questions/49699067/property-has-no-initializer-and-is-not-definitely-assigned-in-the-construc */
   atvDatabase: ATVDatabase | null;
   apiData: atvData[] = [];
@@ -94,9 +94,13 @@ export class AppComponent implements AfterViewInit {
           return dataArray;
         }),
       )
+      
       .subscribe(data => (this.apiData = data));
+      console.log(this.apiData);
   }
+  
 }
+
 
 export interface atvAPI {
   data: atvData[];
@@ -111,7 +115,11 @@ export interface atvData {
   PrimaryOrgId: string | null;
   PasswordExpiry: string | null,
   Password: string;
-  OldValues: Object;
+  OldValues: {    
+    PrimaryOrgId: string | null;
+    PasswordExpiry: string | null,
+    Password: string;
+  }
 }
 
 /** An example database that the data source uses to retrieve data for the table. */
@@ -132,4 +140,5 @@ export class ATVDatabase {
     Use of this source code is governed by an MIT-style license that
     can be found in the LICENSE file at https://angular.io/license */
 
+    
     
