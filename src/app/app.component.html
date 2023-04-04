@@ -5,48 +5,118 @@
     alt="Manhattan Associates Logo"
     src="assets/MAlogo.png"
   />
+  <span>AUDIT TRAIL VIEWER Evan Laptop test</span>
+=======
   <span>AUDIT TRAIL VIEWER Charlie Laptop test</span>
 </div>
 <!--HEADER END-->
 
 <!--TABLE START-->
 <div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade"
+  <div class="loading-shade"
        *ngIf="isLoadingResults || isRateLimitReached">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
-    <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
+    <div class="rate-limit-reached" *ngIf="isRateLimitReached">
       GitHub's API rate limit has been reached. It will be reset in one minute.
     </div>
   </div>
 
-  <div class="example-table-container">
+  <div class="atv">
 
-    <table mat-table [dataSource]="data" class="example-table"
-           matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
-      <!-- Number Column -->
-      <ng-container matColumnDef="number">
-        <th mat-header-cell *matHeaderCellDef>#</th>
-        <td mat-cell *matCellDef="let row">{{row.number}}</td>
+    <table mat-table [dataSource]="apiData" class="atv-table"
+           matSort matSortActive="UpdatedTimestamp" matSortDisableClear matSortDirection="desc">
+           
+      <!-- Updated By Column -->
+      <ng-container matColumnDef="Updated By">
+        <th mat-header-cell *matHeaderCellDef>Updated By</th>
+        <td mat-cell *matCellDef="let row">{{row.UpdatedBy}}</td>
       </ng-container>
 
-      <!-- Title Column -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let row">{{row.title}}</td>
+      <!-- Old Values Column -->
+      <ng-container matColumnDef="Old Values">
+        <th mat-header-cell *matHeaderCellDef>Old Values</th>
+        <td mat-cell *matCellDef="let row_r22">
+          <div class="old-values-container" *ngIf="row_r22.OldValues">
+            <div class="primary-org-id" *ngIf="row_r22.OldValues.PrimaryOrgId">
+              <span class="title">Primary Org ID: </span>
+              <span class="value">{{ row_r22.OldValues.PrimaryOrgId }}</span>
+            </div>
+            <div class="password-expiry" *ngIf="row_r22.OldValues.PasswordExpiry">
+              <span class="title">Password Expiry: </span>
+              <span class="value">{{ row_r22.OldValues.PasswordExpiry }}</span>
+            </div>
+            <div class="password" *ngIf="row_r22.OldValues.Password">
+              <span class="title">Password: </span>
+              <span class="value">{{ row_r22.OldValues.Password}}</span>
+            </div>
+          </div>
+          <div *ngIf="!row_r22.OldValues">N/A</div>
+        </td>
       </ng-container>
 
-      <!-- State Column -->
-      <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef>State</th>
-        <td mat-cell *matCellDef="let row">{{row.state}}</td>
+
+
+      <!-- New Values Column -->
+      <ng-container matColumnDef="New Values">
+        <th mat-header-cell *matHeaderCellDef>New Values</th>
+        <td mat-cell *matCellDef="let row">
+          <div class="new-values-container">
+            <div class="primary-org-id" *ngIf="row.PrimaryOrgId">
+              <span class="title">Primary Org ID: </span>
+              <span class="value">{{ row.PrimaryOrgId }}</span>
+            </div>
+            <div class="password-expiry" *ngIf="row.PasswordExpiry">
+              <span class="title">Password Expiry: </span>
+              <span class="value">{{ row.PasswordExpiry }}</span>
+            </div>
+            <div class="password" *ngIf="row.Password">
+              <span class="title">Password: </span>
+              <span class="value">{{ row.Password }}</span>
+            </div>
+            <div class="n-a" *ngIf="!row.PrimaryOrgId && !row.PasswordExpiry && !row.Password">
+              N/A
+            </div>
+          </div>
+        </td>
       </ng-container>
 
-      <!-- Created Column -->
-      <ng-container matColumnDef="created">
+      <!-- UpdatedTimestamp Column -->
+      <ng-container matColumnDef="Updated On">
         <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-          Created
+          Updated On
         </th>
-        <td mat-cell *matCellDef="let row">{{row.created_at | date}}</td>
+        <td mat-cell *matCellDef="let row">{{row.UpdatedTimestamp}}</td>
+      </ng-container>
+
+
+      <!-- Entity Name Column -->
+      <ng-container matColumnDef="Entity Name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+          Entity Name
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.EntityName}}</td>
+      </ng-container>
+
+
+      <!-- Entity ID Column -->
+      <ng-container matColumnDef="Entity ID">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+          Entity ID
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.UserID}}</td>
+      </ng-container>
+
+      <!-- Type of Change Column -->
+      <ng-container matColumnDef="Type of Change">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+          Type of Change
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.TypeOfChange}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let i=index">{{ i + 1 }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -54,8 +124,9 @@
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="30" aria-label="Select page of GitHub search results"></mat-paginator>
+  <mat-paginator [length]="resultsLength" [pageSize]="50" aria-label="Select page of GitHub search results"></mat-paginator>
 </div>
+
 
 
 <!-- Copyright 2023 Google LLC. All Rights Reserved.
