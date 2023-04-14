@@ -6,10 +6,26 @@
     src="assets/MAlogo.png"
   />
   <span>AUDIT TRAIL VIEWER</span>
+  <mat-form-field class="filter-button">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event, 'EntityName', 'OldValues', 'NewValues')" placeholder="Ex. ahil" #input>
+  </mat-form-field>
+
+  <div class="header-buttons-container">
+    <mat-form-field class="download-button">
+      <mat-select placeholder="Download Options">
+        <mat-option (click)="exportToJSON()">Export to JSON</mat-option>
+        <mat-option (click)="exportToXML()">Export to XML</mat-option>
+        <mat-option (click)="exportToCSV()">Export to CSV</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 </div>
 <!--HEADER END-->
 
 <!--TABLE START-->
+
+
 <div class="example-container mat-elevation-z8">
   <div class="loading-shade"
        *ngIf="isLoadingResults || isRateLimitReached">
@@ -119,11 +135,37 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="50" aria-label="Select page of GitHub search results"></mat-paginator>
+  <mat-paginator [length]="resultsLength" [pageSize]="27" aria-label="Select page of GitHub search results"></mat-paginator>
 </div>
+
+
+<div class="table-footer">
+
+
+  <div class="table-footer">
+    <img src="assets/favicon.png" alt= "Kennesaw Logo" class="left">
+    <a href="https://www.linkedin.com">Darshan</a>
+    <a href="https://www.linkedin.com">Evan</a>
+    <a href="https://www.linkedin.com/in/graysonball/">Grayson</a>
+    <a href="https://www.linkedin.com">Charlie </a>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

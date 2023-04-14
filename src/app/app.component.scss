@@ -29,8 +29,10 @@ p {
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 80px;
+  padding: 0 20px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background-color: #1976d2;
   color: white;
@@ -47,7 +49,7 @@ p {
 .example-container {
 position: relative;
 min-height: 200px;
-max-height: 400px;
+max-height: auto;
 }
 
 .example-table-container {
@@ -88,4 +90,78 @@ table {
 .mat-column-created {
   max-width: 123px;
 }
+
+.table-footer {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: #1976d2;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-footer img.left {
+  max-height: 100%;
+  max-width: 50%;
+  border-right: 1px solid #fff;
+  float: left;
+}
+
+.table-footer img.right {
+  position: relative;
+  max-height: 100%;
+  max-width: 50%;
+  border-left: 1px solid #fff;
+  float: right;
+}
+
+.table-footer a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 10px;
+  border-right: 1px solid #fff;
+  padding-right: 10px;
+  font-weight: 600;
+}
+
+.table-footer a:last-child {
+  border-right: none;
+  padding-right: 0;
+  font-weight: 600;
+}
+
+.header-buttons-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+mat-form-field {
+  font-size: 14px;
+  width: 200px;
+  margin: 0 10px; /* add margin between the two buttons */
+  margin-top: 15px;
+}
+
+.mat-select-trigger {
+  font-size: 14px;
+  height: 30px;
+  line-height: 1.5;
+  padding: 0 12px;
+}
+
+.download-button {
+  width: 190px;
+  height: 80px;
+}
+
+.filter-button {
+  width: 190px;
+  height: 80px;
+}
+
 
