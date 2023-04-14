@@ -25,31 +25,6 @@ import { MatTable } from '@angular/material/table';
 export class AppComponent implements AfterViewInit {
   displayedColumns: string[] = ['#','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'Old Values', 'New Values',];
   dataSource = new MatTableDataSource<atvData>;
-  applyFilter(event: Event, column: string, oldColumn: string, newColumn: string) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-    this.dataSource.filterPredicate = (data, filter) => {
-      const accumulator = (currentTerm: any, key: any) => {
-        return key === column ? currentTerm + data[key] :
-          key === oldColumn ? currentTerm + JSON.stringify(data.OldValues).toLowerCase() :
-          key === newColumn ? currentTerm + JSON.stringify(data.NewValues).toLowerCase() :
-          key === oldColumn ? currentTerm + JSON.stringify(data[oldColumn]).toLowerCase() :
-          key === 'UpdatedTimestamp' ? currentTerm + data['UpdatedTimestamp'].toLowerCase() :
-          key === 'EntityName' ? currentTerm + data['EntityName'].toLowerCase() :
-          key === 'UserID' ? currentTerm + data['UserID'].toLowerCase() :
-          key === 'TypeOfChange' ? currentTerm + data['TypeOfChange'].toLowerCase() :
-          key === 'Old Values' ? currentTerm + JSON.stringify(data['Old Values']).toLowerCase() :
-          key === 'New Values' ? currentTerm + JSON.stringify(data['New Values']).toLowerCase() :
-          key === 'UpdatedBy' ? currentTerm + JSON.stringify(data['UpdatedBy']).toLowerCase() :
-          currentTerm;
-      };
-      const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
-      return dataStr.indexOf(filter) !== -1;
-    };
-  }
   constructor(private _httpClient: HttpClient, private _sanitizer: DomSanitizer, private _iconRegistry: MatIconRegistry) {
   }  
   
