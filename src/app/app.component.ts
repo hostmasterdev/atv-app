@@ -23,7 +23,7 @@ import { MatTable } from '@angular/material/table';
 })
 
 export class AppComponent implements AfterViewInit {
-  displayedColumns: string[] = ['#','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'Old Values', 'New Values',];
+  displayedColumns: string[] = ['#','Created By','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'Old Values', 'New Values',];
   dataSource = new MatTableDataSource<atvData>;
   constructor(private _httpClient: HttpClient, private _sanitizer: DomSanitizer, private _iconRegistry: MatIconRegistry) {
   }  
@@ -32,12 +32,12 @@ export class AppComponent implements AfterViewInit {
 
 
 exportToCSV(): void {
-  const headers = ["UserID", "EntityName", "TypeOfChange", "UpdatedTimestamp", "UpdatedBy", "OldValues", "NewValues"];
+  const headers = ["UserID", "EntityName", "TypeOfChange", "UpdatedTimestamp", "UpdatedBy", "CreatedBy", "OldValues", "NewValues"];
   const dataToExport = this.dataSource.filteredData.map(row => {
-    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password } = row;
+    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password, CreatedBy } = row;
     const oldValues = OldValues ? JSON.stringify(OldValues) : '';
     const newValues = JSON.stringify({PrimaryOrgId, PasswordExpiry, Password});
-    return [UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, oldValues, newValues];
+    return [UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, CreatedBy, oldValues, newValues];
   });
 
   const filename = "audit_trail.csv";
@@ -53,12 +53,11 @@ exportToCSV(): void {
   a.click();
 }
 
-
  // XML File Download
 
  exportToXML(): void {
   const dataToExport = this.dataSource.filteredData.map(row => {
-    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password } = row;
+    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password, CreatedBy } = row;
     const oldValues = OldValues ? { PrimaryOrgId, PasswordExpiry, Password } : null;
     const newValues = { PrimaryOrgId: row.PrimaryOrgId, PasswordExpiry: row.PasswordExpiry, Password: row.Password };
     return {
@@ -67,6 +66,7 @@ exportToCSV(): void {
       TypeOfChange,
       UpdatedTimestamp,
       UpdatedBy,
+      CreatedBy,
       OldValues: oldValues,
       NewValues: newValues
     };
@@ -78,6 +78,7 @@ exportToCSV(): void {
   link.href = 'data:text/xml;charset=utf-8,' + encodeURIComponent(xml);
   link.click();
 }
+
 
 convertToXML(data: any): string {
   const root = document.createElement('audit_trail');
@@ -102,11 +103,36 @@ convertToXML(data: any): string {
           newValuesNode.appendChild(newNode);
         }
         node.appendChild(newValuesNode);
-      } else if (key === 'PrimaryOrgId' || key === 'PasswordExpiry') {
+      } else if (key === 'PrimaryOrgId' || key === 'PasswordExpiry' || key === 'CreatedBy') {
         const childNode = document.createElement(key);
         const textNode = document.createTextNode(value);
         childNode.appendChild(textNode);
         node.appendChild(childNode);
+      } else if (key === 'UserID') {
+        const userIdNode = document.createElement('UserID');
+        const userIdText = document.createTextNode(value);
+        userIdNode.appendChild(userIdText);
+        node.appendChild(userIdNode);
+      } else if (key === 'EntityName') {
+        const entityNameNode = document.createElement('EntityName');
+        const entityNameText = document.createTextNode(value);
+        entityNameNode.appendChild(entityNameText);
+        node.appendChild(entityNameNode);
+      } else if (key === 'TypeOfChange') {
+        const typeOfChangeNode = document.createElement('TypeOfChange');
+        const typeOfChangeText = document.createTextNode(value);
+        typeOfChangeNode.appendChild(typeOfChangeText);
+        node.appendChild(typeOfChangeNode);
+      } else if (key === 'UpdatedTimestamp') {
+        const updatedTimestampNode = document.createElement('UpdatedTimestamp');
+        const updatedTimestampText = document.createTextNode(value);
+        updatedTimestampNode.appendChild(updatedTimestampText);
+        node.appendChild(updatedTimestampNode);
+      } else if (key === 'UpdatedBy') {
+        const updatedByNode = document.createElement('UpdatedBy');
+        const updatedByText = document.createTextNode(value);
+        updatedByNode.appendChild(updatedByText);
+        node.appendChild(updatedByNode);
       } else {
         // do nothing for other fields
       }
@@ -119,12 +145,13 @@ convertToXML(data: any): string {
   return xml;
 }
 
+
   
 // JSON File Download 
 exportToJSON() {
   const filteredData = this.dataSource.filteredData;
   const dataToExport = filteredData.map(row => {
-    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password } = row;
+    const { UserID, EntityName, TypeOfChange, UpdatedTimestamp, UpdatedBy, OldValues, PrimaryOrgId, PasswordExpiry, Password, CreatedBy } = row;
     const oldValues = OldValues ? { PrimaryOrgId, PasswordExpiry, Password } : null;
     const newValues = { PrimaryOrgId: row.PrimaryOrgId, PasswordExpiry: row.PasswordExpiry, Password: row.Password };
     return {
@@ -133,6 +160,7 @@ exportToJSON() {
       TypeOfChange,
       UpdatedTimestamp,
       UpdatedBy,
+      CreatedBy,
       OldValues: oldValues,
       NewValues: newValues
     };
@@ -171,6 +199,7 @@ exportToJSON() {
 
                 const auditObj = {
                     "UpdatedBy": obj["EntityPayload"]["UpdatedBy"] || null,
+                    "CreatedBy": obj["EntityPayload"]["CreatedBy"] || null,
                     "UpdatedTimestamp": obj["EntityPayload"]["UpdatedTimestamp"] || null,
                     "EntityName": obj["AuditMetaData"]["EntityName"] || null,
                     "UserID": obj["BussinessKeyPayload"]["UserId"] || null,
@@ -247,6 +276,7 @@ export interface atvAPI {
   data: atvData[];
 }
 export interface atvData {
+  CreatedBy: string;
   UpdatedBy: string;
   UpdatedTimestamp: string;
   EntityName: string;
