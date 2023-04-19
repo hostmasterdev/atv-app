@@ -1,24 +1,38 @@
 <!--HEADER START-->
+<mat-form-field class="filter-button">
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event, 'EntityName', 'OldValues', 'NewValues')" placeholder="Ex. ahil" #input>
+</mat-form-field>
+
 <div class="header" role="banner">
   <img
     width="200"
     alt="Manhattan Associates Logo"
     src="assets/MAlogo.png"
   />
+
   <span>AUDIT TRAIL VIEWER</span>
-  <!-- <mat-form-field class="filter-button">
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event, 'EntityName', 'OldValues', 'NewValues')" placeholder="Ex. ahil" #input>
-  </mat-form-field> -->
 
   <div class="header-buttons-container">
-    <mat-form-field class="download-button">
-      <mat-select placeholder="Download Options">
-        <mat-option (click)="exportToJSON()">Export to JSON</mat-option>
-        <mat-option (click)="exportToXML()">Export to XML</mat-option>
-        <mat-option (click)="exportToCSV()">Export to CSV</mat-option>
-      </mat-select>
-    </mat-form-field>
+
+<button mat-icon-button [matMenuTriggerFor]="menu">
+  <mat-icon>get_app</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="exportToJSON()">
+    <mat-icon>get_app</mat-icon>
+    Export to JSON
+  </button>
+  <button mat-menu-item (click)="exportToXML()">
+    <mat-icon>get_app</mat-icon>
+    Export to XML
+  </button>
+  <button mat-menu-item (click)="exportToCSV()">
+    <mat-icon>get_app</mat-icon>
+    Export to CSV
+  </button>
+</mat-menu>
+    
   </div>
 </div>
 <!--HEADER END-->
@@ -39,13 +53,14 @@
 
     <table mat-table [dataSource]="apiData" class="atv-table"
            matSort matSortActive="UpdatedTimestamp" matSortDisableClear matSortDirection="desc">
-       
-     <!-- Created By Column -->
+
+
+      <!-- Created By Column -->
       <ng-container matColumnDef="Created By">
         <th mat-header-cell *matHeaderCellDef>Created By</th>
         <td mat-cell *matCellDef="let row">{{row.CreatedBy}}</td>
-      </ng-container>    
-      
+      </ng-container>
+           
       <!-- Updated By Column -->
       <ng-container matColumnDef="Updated By">
         <th mat-header-cell *matHeaderCellDef>Updated By</th>
@@ -142,6 +157,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+      </tr>
+
     </table>
   </div>
 
@@ -154,25 +173,13 @@
 
   <div class="table-footer">
     <img src="assets/favicon.png" alt= "Kennesaw Logo" class="left">
-    <a href="https://www.linkedin.com">Darshan</a>
-    <a href="https://www.linkedin.com">Evan</a>
+    <a href="https://www.linkedin.com/in/darshan-desai-678530157/">Darshan</a>
+    <a href="https://www.linkedin.com/in/evan-rymarev/">Evan</a>
     <a href="https://www.linkedin.com/in/graysonball/">Grayson</a>
-    <a href="https://www.linkedin.com">Charlie </a>
+    <a href="https://www.linkedin.com/in/charles-moore-02801722a/">Charlie </a>
   </div>
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!-- Copyright 2023 Google LLC. All Rights Reserved.
