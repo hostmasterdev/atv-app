@@ -112,14 +112,16 @@ table {
 }
 
 .table-footer img.left {
-  max-height: 95%;
-  max-width: 50%;
+  max-height: 65%;
+  max-width: 65%;
   float: left;
+  padding: 12px;
 }
 
 .table-footer img.right {
-  max-height: 95%;
-  max-width: 50%;
+  max-height: 65%;
+  max-width: 65%;
+  padding: 12px;
 }
 
 .table-footer a {
