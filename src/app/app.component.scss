@@ -45,6 +45,13 @@ p {
   margin: 0 16px;
 }
 
+.header span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+}
+
 /* Structure */
 .example-container {
 position: relative;
