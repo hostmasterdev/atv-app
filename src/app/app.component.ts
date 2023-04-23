@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, ViewChild, AfterViewInit} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, SortDirection} from '@angular/material/sort';
 import {merge, Observable, of as observableOf} from 'rxjs';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
@@ -23,8 +23,9 @@ import { MatTable } from '@angular/material/table';
 })
 
 export class AppComponent implements AfterViewInit {
-  displayedColumns: string[] = ['#','Created By','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'Old Values', 'New Values',];
-  dataSource = new MatTableDataSource<atvData>;
+  displayedColumns: string[] = ['number','Created By','Updated By', 'Updated On', 'Entity Name', 'Entity ID', 'Type of Change', 'Old Values', 'New Values',];
+  dataSource = new MatTableDataSource<atvData>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
 //filter feature
@@ -164,7 +165,7 @@ convertToXML(data: any): string {
         updatedByNode.appendChild(updatedByText);
         node.appendChild(updatedByNode);
       } else {
-        // do nothing for other fields
+       
       }
     }
     root.appendChild(node);
@@ -214,7 +215,6 @@ exportToJSON() {
   isLoadingResults = true;
   isRateLimitReached = false;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<any>;
 
@@ -260,12 +260,11 @@ exportToJSON() {
       this._sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/download.svg')
     );
   
-    // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-  
-    // Create a new MatTableDataSource object and set it as the dataSource for your table
-    this.dataSource = new MatTableDataSource();
+
+    this.dataSource = new MatTableDataSource<atvData>();
     this.table.dataSource = this.dataSource;
+    this.dataSource.paginator = this.paginator;
   
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
@@ -279,27 +278,26 @@ exportToJSON() {
           ).pipe(catchError(() => observableOf(null)));
         }),
         map(apiData => {
-          // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.isRateLimitReached = apiData === null;
   
           if (apiData === null) {
             return [];
           }
-  
-          // Parse the JSON response and update the results length
           const dataArray = this.jsonParse(apiData);
           this.resultsLength = dataArray.length;
-  
-          // Return the data as an array
-          return dataArray;
+
+          const numberedDataArray = dataArray.map((item, index) => {
+            return { number: index + 1, ...item };
+          });
+          return numberedDataArray;
         }),
       )
       .subscribe(data => {
-        // Set the data for the MatTableDataSource object
         this.dataSource.data = data;
       });
   }
+  
   
   
 }
@@ -331,5 +329,5 @@ export class ATVDatabase {
   }
 }
 
- 
+
     

@@ -15,6 +15,8 @@
 
   <div class="header-buttons-container">
 
+
+
 <button mat-icon-button [matMenuTriggerFor]="menu">
   <mat-icon>get_app</mat-icon>
 </button>
@@ -52,7 +54,13 @@
   <div class="atv">
 
     <table mat-table [dataSource]="apiData" class="atv-table"
-           matSort matSortActive="UpdatedTimestamp" matSortDisableClear matSortDirection="desc">
+    matSort matSortActive="UpdatedTimestamp" matSortDisableClear matSortDirection="desc">
+
+<!-- Number Column -->
+<ng-container matColumnDef="number">
+  <th mat-header-cell *matHeaderCellDef> # </th>
+  <td mat-cell *matCellDef="let row">{{ dataSource.data.indexOf(row) + 1 }}</td>
+</ng-container>
 
 
       <!-- Created By Column -->
@@ -149,10 +157,6 @@
         <td mat-cell *matCellDef="let row">{{row.TypeOfChange}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="#">
-        <th mat-header-cell *matHeaderCellDef>#</th>
-        <td mat-cell *matCellDef="let i=index">{{ i + 1 }}</td>
-      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -164,22 +168,30 @@
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="27" aria-label="Select page of GitHub search results"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[10,15, 20, 25]" showFirstLastButtons></mat-paginator>
 </div>
 
 
 <div class="table-footer">
+  <a href="https://www.kennesaw.edu">
+    <img src="assets/favicon.png" alt="Kennesaw Logo" class="left">
+  </a>
 
 
   <div class="table-footer">
-    <img src="assets/favicon.png" alt= "Kennesaw Logo" class="left">
+    
     <a href="https://www.linkedin.com/in/darshan-desai-678530157/">Darshan</a>
     <a href="https://www.linkedin.com/in/evan-rymarev/">Evan</a>
     <a href="https://www.linkedin.com/in/graysonball/">Grayson</a>
     <a href="https://www.linkedin.com/in/charles-moore-02801722a/">Charlie </a>
+
   </div>
+  <a href="https://github.com/hostmasterdev/atv-app">
+    <img src="assets/github-mark.png" alt="GitHub Logo" class="right">
+  </a>
 
 </div>
+
 
 
 <!-- Copyright 2023 Google LLC. All Rights Reserved.

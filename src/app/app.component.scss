@@ -105,18 +105,14 @@ table {
 }
 
 .table-footer img.left {
-  max-height: 100%;
+  max-height: 95%;
   max-width: 50%;
-  border-right: 1px solid #fff;
   float: left;
 }
 
 .table-footer img.right {
-  position: relative;
   max-height: 100%;
   max-width: 50%;
-  border-left: 1px solid #fff;
-  float: right;
 }
 
 .table-footer a {
@@ -124,7 +120,7 @@ table {
   text-decoration: none;
   margin: 0 10px;
   border-right: 1px solid #fff;
-  padding-right: 10px;
+  padding-right: 15px;
   font-weight: 600;
 }
 
@@ -173,4 +169,15 @@ table {
   align-self: center; /* added align-self property */
 }
 
+.left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 
+
+.right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
